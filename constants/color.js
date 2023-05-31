@@ -1,0 +1,1 @@
+const THEME_COLOR = "1F1D2A";
