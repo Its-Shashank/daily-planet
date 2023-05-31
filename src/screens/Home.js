@@ -13,21 +13,22 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { colors } from "../theme";
 import Tasks from "../Tasks";
 import Header from "../Header";
-import { storeData, getData } from "../settings";
+// import { storeData, getData } from "../settings";
 
 export default function Home({ navigation }) {
   const [addNewTask, setAddTask] = useState(false);
   const [taskValue, setTaskValue] = useState("");
   const [tasks, setTasks] = useState([]);
+  const [filteredTasks, setFilteredTasks] = useState([]);
 
-  const getDataFromAsyncStorage = async () => {
-    const data = await getData("@tasks");
-    setTasks(data);
-  };
+  // const getDataFromAsyncStorage = async () => {
+  //   const data = await getData("@tasks");
+  //   setTasks(data);
+  // };
 
-  useEffect(() => {
-    getDataFromAsyncStorage();
-  }, []);
+  // useEffect(() => {
+  //   getDataFromAsyncStorage();
+  // }, []);
 
   const toggleAddTask = () => {
     setAddTask(prev => !prev);
@@ -43,7 +44,8 @@ export default function Home({ navigation }) {
     };
     setTaskValue("");
     setTasks([...tasks, task]);
-    storeData("@tasks", [...tasks, task]);
+    setFilteredTasks([...tasks, task]);
+    // storeData("@tasks", [...tasks, task]);
   };
 
   const handleDelete = index => {
@@ -52,7 +54,19 @@ export default function Home({ navigation }) {
       copyTasks.splice(index, 1);
     }
     setTasks(copyTasks);
-    storeData("@tasks", copyTasks);
+    setFilteredTasks(copyTasks);
+    // storeData("@tasks", copyTasks);
+  };
+
+  const handleSearch = searchTerm => {
+    if (tasks.length > 0 && searchTerm) {
+      const currentTasks = tasks.filter(task =>
+        task.taskName.includes(searchTerm)
+      );
+      setFilteredTasks(currentTasks);
+    } else if (tasks.length > 0 && !searchTerm) {
+      setFilteredTasks(tasks);
+    }
   };
 
   return (
@@ -60,7 +74,10 @@ export default function Home({ navigation }) {
       {Platform.OS === "ios" && (
         <StatusBar style="dark" backgroundColor={colors.themeColor} />
       )}
-      <Header onHamburgerPress={navigation.openDrawer} />
+      <Header
+        onHamburgerPress={navigation.openDrawer}
+        handleSearch={handleSearch}
+      />
       <View
         style={{
           padding: 20,
@@ -125,7 +142,7 @@ export default function Home({ navigation }) {
           </TouchableOpacity>
         </View>
       )}
-      <Tasks tasks={tasks} handleDelete={handleDelete} />
+      <Tasks tasks={filteredTasks} handleDelete={handleDelete} />
     </SafeAreaView>
   );
 }

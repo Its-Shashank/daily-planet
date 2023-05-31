@@ -4,7 +4,6 @@ import { NavigationContainer } from "@react-navigation/native";
 import * as Notifications from "expo-notifications";
 import Home from "./src/screens/Home";
 import Reminders from "./src/screens/Reminders";
-import PushNotifications from "./src/PushNotifications";
 import { useNotifications } from "./src/hooks/useNotifications";
 
 const Drawer = createDrawerNavigator();
@@ -36,7 +35,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Drawer.Navigator
-        initialRouteName="Reminders"
+        initialRouteName="Tasks"
         screenOptions={{
           headerShown: false,
         }}>

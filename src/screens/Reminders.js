@@ -13,20 +13,21 @@ import { colors } from "../theme";
 import Modal from "../Modal";
 import ReminderList from "../ReminderList";
 import Header from "../Header";
-import { storeData, getData } from "../settings";
+// import { storeData, getData } from "../settings";
 
 export default function Home({ navigation }) {
   const [reminders, setReminders] = useState([]);
+  const [filteredReminders, setFilteredReminders] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
 
-  const getDataFromAsyncStorage = async () => {
-    const data = await getData("@reminders");
-    setReminders(data);
-  };
+  // const getDataFromAsyncStorage = async () => {
+  //   const data = await getData("@reminders");
+  //   setReminders(data);
+  // };
 
-  useEffect(() => {
-    getDataFromAsyncStorage();
-  }, []);
+  // useEffect(() => {
+  //   getDataFromAsyncStorage();
+  // }, []);
 
   const addReminder = () => {
     setModalVisible(true);
@@ -38,14 +39,27 @@ export default function Home({ navigation }) {
       copyReminders.splice(index, 1);
     }
     setReminders(copyReminders);
-    storeData("@reminders", copyReminders);
+    setFilteredReminders(copyReminders);
+    // storeData("@reminders", copyReminders);
   };
 
   const handleSave = reminder => {
     // const { title, description, date, time } = reminder;
     setReminders([...reminders, reminder]);
-    storeData("@reminders", [...reminders, reminder]);
+    setFilteredReminders([...reminders, reminder]);
+    // storeData("@reminders", [...reminders, reminder]);
     setModalVisible(false);
+  };
+
+  const handleSearch = searchTerm => {
+    if (reminders.length > 0 && searchTerm) {
+      const currentReminders = tasks.filter(task =>
+        task.taskName.includes(searchTerm)
+      );
+      setFilteredReminders(currentReminders);
+    } else if (reminders.length > 0 && !searchTerm) {
+      setFilteredReminders(tasks);
+    }
   };
 
   return (
@@ -61,7 +75,10 @@ export default function Home({ navigation }) {
         handleClose={() => setModalVisible(false)}
         handleSave={handleSave}
       />
-      <Header onHamburgerPress={navigation.openDrawer} />
+      <Header
+        onHamburgerPress={navigation.openDrawer}
+        handleSearch={handleSearch}
+      />
       <View
         style={{
           padding: 20,

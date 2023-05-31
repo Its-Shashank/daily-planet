@@ -1,8 +1,16 @@
-import { View, TouchableOpacity, Text } from "react-native";
+import {
+  View,
+  TouchableOpacity,
+  Text,
+  TextInput,
+  Pressable,
+} from "react-native";
 import { colors } from "./theme";
 import { MaterialCommunityIcons, AntDesign } from "@expo/vector-icons";
+import { useState } from "react";
 
-const Header = ({ onHamburgerPress }) => {
+const Header = ({ onHamburgerPress, handleSearch }) => {
+  const [searchTerm, setSearchTerm] = useState("");
   return (
     <View style={{ backgroundColor: colors.themeColor }}>
       <View
@@ -18,14 +26,6 @@ const Header = ({ onHamburgerPress }) => {
             style={{ color: colors.white }}
           />
         </TouchableOpacity>
-        <View style={{ flexDirection: "row" }}>
-          <MaterialCommunityIcons
-            name="bell-outline"
-            size={30}
-            style={{ color: colors.white }}
-          />
-          <AntDesign name="user" size={30} style={{ color: colors.white }} />
-        </View>
       </View>
       <View style={{ padding: 16 }}>
         <Text style={{ color: colors.white, fontSize: 30 }}>
@@ -47,7 +47,17 @@ const Header = ({ onHamburgerPress }) => {
             size={30}
             style={{ color: colors.white }}
           />
-          <View style={{ flexDirection: "row" }}>
+          <TextInput
+            value={searchTerm}
+            onChangeText={setSearchTerm}
+            style={{ flex: 1, color: colors.white, marginLeft: 10 }}
+          />
+          <Pressable
+            onPress={() => handleSearch(searchTerm)}
+            style={{ paddingHorizontal: 10 }}>
+            <Text style={{ color: colors.white, fontSize: 20 }}>Search</Text>
+          </Pressable>
+          {/* <View style={{ flexDirection: "row" }}>
             <MaterialCommunityIcons
               name="microphone"
               size={30}
@@ -58,7 +68,7 @@ const Header = ({ onHamburgerPress }) => {
               size={30}
               style={{ color: colors.white }}
             />
-          </View>
+          </View> */}
         </View>
       </View>
     </View>
